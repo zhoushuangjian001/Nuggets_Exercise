@@ -79,10 +79,10 @@ packages:
     dependency: "direct main"
     description:
       name: idkit
-      sha256: "4cffcf7d06ea3f544a82b4c6ce44887987b67194e4f811506088a9212e8eb567"
+      sha256: "6f92743b86d3ab9a903d28e96ac5022212b8165d605302454f399a8863ee2746"
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.5"
+    version: "0.3.8"
   js:
     dependency: transitive
     description:
