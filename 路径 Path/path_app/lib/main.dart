@@ -51,11 +51,341 @@ class _MyHomePageState extends State<MyHomePage> {
 class PathCustomPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    relativeArcToPoint(canvas);
+    computeMetrics(canvas);
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+}
+
+void computeMetrics(Canvas canvas) {
+  final Path path = Path();
+  path.moveTo(100, 100);
+  path.lineTo(200, 200);
+
+  final Path path1 = Path();
+  path1.moveTo(300, 300);
+  path1.lineTo(400, 400);
+
+  path.extendWithPath(path1, Offset.zero);
+  canvas.drawPath(
+    path,
+    Paint()
+      ..color = Colors.purple
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2,
+  );
+  final PathMetrics pathMetrics = path.computeMetrics();
+  final PathMetric pathMetric = pathMetrics.first;
+  // 路径索引
+  print(pathMetric.contourIndex);
+  // 路径是否关闭
+  print(pathMetric.isClosed);
+  // 路径的长度
+  print(pathMetric.length);
+  // 扩展新的路径
+  print(pathMetric.extractPath(10, 20));
+  // 计算给定路径偏移的位置以及切角
+  print(pathMetric.getTangentForOffset(10));
+}
+
+void combine(Canvas canvas) {
+  final Path path1 = Path();
+  path1.moveTo(200, 100);
+  path1.lineTo(100, 300);
+  path1.lineTo(300, 300);
+  path1.close();
+
+  // canvas.drawPath(
+  //   path1,
+  //   Paint()
+  //     ..color = Colors.red
+  //     ..style = PaintingStyle.stroke
+  //     ..strokeWidth = 2,
+  // );
+
+  final Path path2 = Path();
+  path2.moveTo(250, 200);
+  path2.lineTo(400, 200);
+  path2.lineTo(300, 400);
+  path2.lineTo(150, 400);
+  path2.close();
+  // canvas.drawPath(
+  //   path2,
+  //   Paint()
+  //     ..color = Colors.green
+  //     ..style = PaintingStyle.stroke
+  //     ..strokeWidth = 2,
+  // );
+  final Path path = Path.combine(PathOperation.reverseDifference, path1, path2);
+  canvas.drawPath(
+    path,
+    Paint()
+      ..color = Colors.purple
+      ..style = PaintingStyle.fill
+      ..strokeWidth = 2,
+  );
+}
+
+void getBounds(Canvas canvas) {
+  final Path path = Path();
+  path.moveTo(100, 100);
+  path.lineTo(200, 200);
+
+  final Path path1 = Path();
+  path1.moveTo(200, 100);
+  path1.lineTo(300, 300);
+  path.addPath(path1, Offset.zero);
+  // path.extendWithPath(path1, Offset.zero);
+  canvas.drawPath(
+    path,
+    Paint()
+      ..color = Colors.purple
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2,
+  );
+
+  canvas.drawRect(
+    path.getBounds(),
+    Paint()
+      ..color = Colors.red
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2,
+  );
+}
+
+void transform(Canvas canvas) {
+  final Path path = Path();
+  path.moveTo(100, 100);
+  path.lineTo(200, 200);
+  canvas.drawPath(
+    path,
+    Paint()
+      ..color = Colors.purple
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2,
+  );
+
+  final Matrix4 matrix4 = Matrix4.identity();
+  // matrix4.translate(200.0);
+  // matrix4.scale(2.0);
+  matrix4.rotateZ(pi / 6);
+  final Path path1 = path.transform(matrix4.storage);
+  canvas.drawPath(
+    path1,
+    Paint()
+      ..color = Colors.purple
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2,
+  );
+}
+
+void shift(Canvas canvas) {
+  final Path path = Path();
+  path.moveTo(100, 100);
+  path.lineTo(200, 200);
+  final Path path1 = Path();
+  path1.moveTo(200, 100);
+  path1.lineTo(300, 200);
+  path.addPath(path1, Offset.zero);
+  canvas.drawPath(
+    path,
+    Paint()
+      ..color = Colors.purple
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2,
+  );
+  final Path path2 = path.shift(const Offset(200, 200));
+  canvas.drawPath(
+    path2,
+    Paint()
+      ..color = Colors.purple
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2,
+  );
+}
+
+void contains(Canvas canvas) {
+  final Path path = Path();
+  path.moveTo(100, 100);
+  path.lineTo(200, 200);
+
+  final Path path1 = Path();
+  path1.moveTo(300, 100);
+  path1.lineTo(400, 100);
+  path1.lineTo(300, 200);
+  // path1.close();
+
+  path.addPath(path1, Offset.zero);
+
+  final bool isContains = path.contains(const Offset(200, 200));
+  canvas.drawPath(
+    path,
+    Paint()
+      ..color = isContains ? Colors.red : Colors.purple
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2,
+  );
+}
+
+void reset(Canvas canvas) {
+  final Path path = Path();
+  path.moveTo(100, 100);
+  path.lineTo(200, 200);
+  final Path path1 = Path();
+  path1.moveTo(300, 100);
+  path1.lineTo(400, 200);
+  path.addPath(path1, Offset.zero);
+  path.reset();
+  canvas.drawPath(
+    path,
+    Paint()
+      ..color = Colors.purple
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2,
+  );
+}
+
+void close(Canvas canvas) {
+  final Path path = Path();
+  path.moveTo(100, 100);
+  path.lineTo(200, 200);
+
+  final Path path1 = Path();
+  path1.moveTo(300, 100);
+  path1.lineTo(400, 200);
+  path1.lineTo(400, 500);
+  // path1.close();
+
+  path.extendWithPath(path1, Offset.zero);
+  path.close();
+  canvas.drawPath(
+    path,
+    Paint()
+      ..color = Colors.purple
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2,
+  );
+}
+
+void extendWithPath(Canvas canvas) {
+  final Path path = Path();
+  path.moveTo(100, 100);
+  path.lineTo(200, 200);
+
+  final Path path1 = Path();
+  path1.moveTo(300, 100);
+  path1.lineTo(400, 200);
+  final Matrix4 matrix4 = Matrix4.identity();
+  // matrix4.translate(100.0, 100.0);
+  // matrix4.scale(2.0);
+  matrix4.rotateZ(pi / 3);
+
+  path.extendWithPath(path1, const Offset(0, 0), matrix4: matrix4.storage);
+
+  canvas.drawPath(
+    path,
+    Paint()
+      ..color = Colors.purple
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2,
+  );
+}
+
+void addPath(Canvas canvas) {
+  final Path path = Path();
+  path.moveTo(100, 100);
+  path.lineTo(200, 200);
+
+  final Path path1 = Path();
+  path1.moveTo(300, 100);
+  path1.lineTo(400, 200);
+  final Matrix4 matrix4 = Matrix4.identity();
+  // matrix4.translate(100.0, 100.0);
+  // matrix4.scale(2.0);
+  matrix4.rotateZ(pi / 3);
+
+  path.addPath(path1, const Offset(0, 0), matrix4: matrix4.storage);
+
+  canvas.drawPath(
+    path,
+    Paint()
+      ..color = Colors.purple
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2,
+  );
+}
+
+void addRRect(Canvas canvas) {
+  final Path path = Path();
+  path.moveTo(100, 100);
+  path.lineTo(200, 200);
+  path.addRRect(RRect.fromLTRBR(300, 200, 500, 100, const Radius.circular(10)));
+  canvas.drawPath(
+    path,
+    Paint()
+      ..color = Colors.purple
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2,
+  );
+}
+
+void addPolygon(Canvas canvas) {
+  final Path path = Path();
+  path.moveTo(100, 100);
+  path.lineTo(200, 100);
+  path.addPolygon(const [Offset(300, 100), Offset(400, 200), Offset(300, 300)], false);
+  path.addPolygon(const [Offset(500, 100), Offset(600, 100), Offset(500, 200)], true);
+  canvas.drawPath(
+    path,
+    Paint()
+      ..color = Colors.purple
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2,
+  );
+}
+
+void addArc(Canvas canvas) {
+  final Path path = Path();
+  path.moveTo(100, 100);
+  path.lineTo(300, 100);
+  path.addArc(Rect.fromCenter(center: const Offset(150, 200), width: 200, height: 100), pi * 0.5, pi);
+  path.addArc(Rect.fromCenter(center: const Offset(500, 200), width: 200, height: 100), pi * 0.5, pi * 3);
+  canvas.drawPath(
+    path,
+    Paint()
+      ..color = Colors.purple
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2,
+  );
+}
+
+void addOval(Canvas canvas) {
+  final Path path = Path();
+  path.moveTo(100, 200);
+  path.lineTo(200, 200);
+  path.addOval(Rect.fromCenter(center: const Offset(150, 100), width: 200, height: 100));
+  canvas.drawPath(
+    path,
+    Paint()
+      ..color = Colors.purple
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2,
+  );
+}
+
+void addRect(Canvas canvas) {
+  final Path path = Path();
+  path.moveTo(100, 200);
+  path.lineTo(200, 300);
+  path.addRect(const Rect.fromLTWH(100, 30, 100, 100));
+  canvas.drawPath(
+    path,
+    Paint()
+      ..color = Colors.purple
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2,
+  );
 }
 
 void relativeArcToPoint(Canvas canvas) {
