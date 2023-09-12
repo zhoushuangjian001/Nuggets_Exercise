@@ -5,20 +5,8 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:chat_bubble/main.dart';
-
-class Animal {
-  Animal(this.name, this.age);
-  final String name;
-  int age;
-
-  @override
-  String toString() => 'Animal\n name:$name;age:$age';
-}
-
 void main() {
-  test('', () {});
+  testWidgets('Counter increments smoke test', (WidgetTester tester) async {});
 }
